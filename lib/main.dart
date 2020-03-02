@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xfff2f2f2),
       ),
 
-      home: Home(),
+      home: LogIn(),
     );
   }
 }

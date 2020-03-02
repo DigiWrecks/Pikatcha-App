@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "88545318584",
+    "firebase_url": "https://pikatcha-e0ffa.firebaseio.com",
+    "project_id": "pikatcha-e0ffa",
+    "storage_bucket": "pikatcha-e0ffa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88545318584:android:e1a1c5be452239d210864d",
+        "android_client_info": {
+          "package_name": "com.digiwrecks.pikatcha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "88545318584-983gki4qei7t8nd9j78i9j3rvluoh0hc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIlWn0LWwTZ9DZNkgoD61vRq--YfgHOgo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "88545318584-983gki4qei7t8nd9j78i9j3rvluoh0hc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

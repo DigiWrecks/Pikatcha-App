@@ -19,7 +19,7 @@ class ContactInformation extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: InputField(hint: 'Phone Number',type: TextInputType.number,prefix: Icons.phone_android,),
+            child: InputField(hint: 'Phone Number',type: TextInputType.phone,prefix: Icons.phone_android,),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
