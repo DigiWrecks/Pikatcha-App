@@ -2,45 +2,44 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pikatcha/screens/home.dart';
 import 'package:pikatcha/screens/login.dart';
 import 'package:pikatcha/widgets/button.dart';
 import 'package:pikatcha/widgets/inputfield.dart';
 import 'package:pikatcha/widgets/toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ContactInformation extends StatelessWidget {
+class ContactInformationForGoogle extends StatelessWidget {
 
   final String email;
-  final String password;
+  final String uid;
+  final String Uname;
 
-  ContactInformation({Key key, this.email, this.password}) : super(key: key);
+  ContactInformationForGoogle({Key key, this.email, this.uid, this.Uname}) : super(key: key);
 
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController address = TextEditingController();
-  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   CollectionReference collectionReference = Firestore.instance.collection('users');
 
   signUp(BuildContext context) async {
     if(name.text!='' && phone.text!='' && address.text!=''){
       try{
-        AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
-            email: email, password: password);
-        FirebaseUser user = result.user;
-        print(user.uid);
 
-        await collectionReference.document(user.uid).setData({
+        await collectionReference.document(uid).setData({
           'email': email,
           'name': name.text,
           'phone': phone.text,
           'address': address.text
         });
 
-        ToastBar(color: Colors.green,text: 'Signed Up Successfully!').show();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', email);
+        prefs.setString('uid', uid);
 
-        Navigator.push(
-          context,
-          CupertinoPageRoute(builder: (context) => LogIn()),
-        );
+
+        Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context){
+          return Home();}));
         
       }
       catch(E){
@@ -55,6 +54,7 @@ class ContactInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    name.text = Uname;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
