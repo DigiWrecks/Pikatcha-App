@@ -4,8 +4,9 @@ class CustomText extends StatelessWidget {
 
   final String text;
   final double size;
+  final TextAlign align;
 
-  const CustomText({Key key, this.text, this.size}) : super(key: key);
+  const CustomText({Key key, this.text, this.size, this.align=TextAlign.center}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class CustomText extends StatelessWidget {
 //        fontWeight: FontWeight.bold,
         fontSize: size,
       ),
-      textAlign: TextAlign.center,
+      textAlign: align,
     );
   }
 }

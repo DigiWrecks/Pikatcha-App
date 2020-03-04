@@ -3,10 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pikatcha/screens/admin/admin-login.dart';
 import 'package:pikatcha/screens/contact-information2.dart';
 import 'package:pikatcha/screens/home.dart';
 import 'package:pikatcha/screens/signup.dart';
 import 'package:pikatcha/widgets/button.dart';
+import 'package:pikatcha/widgets/custom-text.dart';
 import 'package:pikatcha/widgets/inputfield.dart';
 import 'package:pikatcha/widgets/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -80,12 +82,30 @@ class LogIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Color(0xfff2f2f2),
+        textTheme: TextTheme(body1: TextStyle(color: Colors.black)),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0,10,15,0),
+            child: GestureDetector(
+              onTap: (){
+                Navigator.push(context,
+                  CupertinoPageRoute(builder: (context) => AdminLogin()),
+                );
+              },
+              child: Container(child: CustomText(size: 20,text: 'Admin',)),
+            ),
+          )
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(30,100,30,0),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(30,30,30,0),
                 child: Image.asset('images/logo.jpg'),
               ),
             Padding(
