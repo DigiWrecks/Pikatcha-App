@@ -100,11 +100,11 @@ class _HomeState extends State<Home> {
           DropdownButton(
             items: [
               DropdownMenuItem(child: CustomText(text: 'Select Size',),value: 'Select Size',),
-              DropdownMenuItem(child: CustomText(text: '2R',),value: '2R',),
-              DropdownMenuItem(child: CustomText(text: '3R',),value: '3R',),
-              DropdownMenuItem(child: CustomText(text: '4R',),value: '4R',),
-              DropdownMenuItem(child: CustomText(text: '5R',),value: '5R',),
-              DropdownMenuItem(child: CustomText(text: '6R',),value: '6R',),
+              DropdownMenuItem(child: CustomText(text: '2R - \$2.00',),value: '2R',),
+              DropdownMenuItem(child: CustomText(text: '3R - \$2.30',),value: '3R',),
+              DropdownMenuItem(child: CustomText(text: '4R - \$2.60',),value: '4R',),
+              DropdownMenuItem(child: CustomText(text: '5R - \$3.00',),value: '5R',),
+              DropdownMenuItem(child: CustomText(text: '6R - \$4.00',),value: '6R',),
             ],onChanged:(newValue){
             setState(() {
               status = newValue;
@@ -115,7 +115,9 @@ class _HomeState extends State<Home> {
 
           Padding(
             padding: const EdgeInsets.fromLTRB(30,80,30,0),
-            child: Button(text: 'Submit',onclick: () async {}),
+            child: Button(text: 'Submit',onclick: (){
+              //todo:add payment gateaway code here
+            }),
           ),
 
         ],
