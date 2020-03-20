@@ -17,11 +17,14 @@ class ContactInformation extends StatelessWidget {
   TextEditingController name = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController address = TextEditingController();
+  TextEditingController building = TextEditingController();
+  TextEditingController unit = TextEditingController();
+  TextEditingController postalcode = TextEditingController();
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   CollectionReference collectionReference = Firestore.instance.collection('users');
 
   signUp(BuildContext context) async {
-    if(name.text!='' && phone.text!='' && address.text!=''){
+    if(name.text!='' && phone.text!='' && address.text!='' &&building.text!='' &&unit.text!='' &&postalcode.text!='' ){
       try{
         AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
             email: email, password: password);
@@ -32,7 +35,10 @@ class ContactInformation extends StatelessWidget {
           'email': email,
           'name': name.text,
           'phone': phone.text,
-          'address': address.text
+          'address': address.text,
+          'buildingNo': building.text,
+          'unitNo': unit.text,
+          'postal': postalcode.text
         });
 
         ToastBar(color: Colors.green,text: 'Signed Up Successfully!').show();
@@ -56,31 +62,46 @@ class ContactInformation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         centerTitle: true,
         title: Text('Contact Information',style: TextStyle(fontWeight: FontWeight.bold),),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: InputField(hint: 'Name',prefix: Icons.person,controller: name,),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: InputField(hint: 'Phone Number',type: TextInputType.phone,prefix: Icons.phone_android,controller: phone,),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: InputField(hint: 'Address',prefix: Icons.location_city,controller: address,),
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: 'Name',prefix: Icons.person,controller: name,),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: 'Phone Number',type: TextInputType.phone,prefix: Icons.phone_android,controller: phone,),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: 'Address',prefix: Icons.location_city,controller: address,),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: 'Building Number',prefix: Icons.location_city,controller: building,),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: 'Unit Number',prefix: Icons.location_city,controller: unit,),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: 'Postal Code',prefix: Icons.location_city,controller: postalcode,),
+            ),
 
-          Padding(
-            padding: const EdgeInsets.fromLTRB(30,100,30,0),
-            child: Button(text: 'Submit',onclick: ()=>signUp(context),),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30,100,30,0),
+              child: Button(text: 'Submit',onclick: ()=>signUp(context),),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -9,20 +9,26 @@ import 'package:pikatcha/widgets/toast.dart';
 
 class Settings extends StatelessWidget {
 
-  final String Address;
+  final String Address,buildingNo,unitNo,postalCode;
   final String phoneNo;
   final String uid;
 
-  Settings({Key key, this.Address, this.phoneNo, this.uid}) : super(key: key);
+  Settings({Key key, this.Address, this.phoneNo, this.uid, this.buildingNo, this.unitNo, this.postalCode}) : super(key: key);
 
   TextEditingController phone = TextEditingController();
   TextEditingController address = TextEditingController();
+  TextEditingController building = TextEditingController();
+  TextEditingController unit = TextEditingController();
+  TextEditingController postalcode = TextEditingController();
 
 
   updateData(BuildContext context) async {
       await Firestore.instance.collection('users').document(uid).updateData({
         'address': address.text,
-        'phone': phone.text
+        'phone': phone.text,
+        'buildingNo': building.text,
+        'unitNo': unit.text,
+        'postal': postalcode.text
       });
       
       ToastBar(text: 'Data Updated',color: Colors.green).show();
@@ -38,38 +44,65 @@ class Settings extends StatelessWidget {
 
     phone.text = phoneNo;
     address.text = Address;
+    building.text = buildingNo;
+    unit.text = unitNo;
+    postalcode.text = postalCode;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      
       appBar: AppBar(
         centerTitle: true,
         title: Text('Settings',style: TextStyle(fontWeight: FontWeight.bold),),
       ),
 
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(width: double.infinity,),
-          CustomText(text: 'Change Address',size: 20,),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: InputField(hint: '',controller: address,),
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(width: double.infinity,),
+            SizedBox(height: 30,),
+            CustomText(text: 'Change Address',size: 20,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: '',controller: address,settings: true,),
+            ),
 
-          SizedBox(height: 20,),
-          CustomText(text: 'Change Phone Number',size: 20,),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: InputField(hint: '',type: TextInputType.phone,controller: phone,),
-          ),
+            SizedBox(height: 20,),
+            CustomText(text: 'Change Building No',size: 20,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: '',controller: building,settings: true,),
+            ),
 
-          Padding(
-            padding: const EdgeInsets.fromLTRB(30,80,30,0),
-            child: Button(text: 'Submit',onclick: ()=>updateData(context),),
-          ),
+            SizedBox(height: 20,),
+            CustomText(text: 'Change Unit No',size: 20,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: '',controller: unit,settings: true,),
+            ),
+
+            SizedBox(height: 20,),
+            CustomText(text: 'Change Postal Code',size: 20,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: '',controller: postalcode,settings: true,),
+            ),
+
+            SizedBox(height: 20,),
+            CustomText(text: 'Change Phone Number',size: 20,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: InputField(hint: '',type: TextInputType.phone,controller: phone,settings: true,),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(30,80,30,0),
+              child: Button(text: 'Submit',onclick: ()=>updateData(context),),
+            ),
 
 
-        ],
+          ],
+        ),
       ),
     );
   }
