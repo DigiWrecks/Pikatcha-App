@@ -78,69 +78,82 @@ class LogIn extends StatelessWidget {
   }
 
 
-
+  DateTime currentBackPressTime;
+  Future<bool> onWillPop() {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      ToastBar(text: 'Tap Back again to Exit',color: Colors.grey).show();
+      return Future.value(false);
+    }
+    return Future.value(true);
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Color(0xfff2f2f2),
-        textTheme: TextTheme(body1: TextStyle(color: Colors.black)),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0,10,15,0),
-            child: GestureDetector(
-              onTap: (){
-                Navigator.push(context,
-                  CupertinoPageRoute(builder: (context) => AdminLogin()),
-                );
-              },
-              child: Container(child: CustomText(size: 20,text: 'Admin',)),
-            ),
-          )
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Color(0xfff2f2f2),
+          textTheme: TextTheme(body1: TextStyle(color: Colors.black)),
+          actions: <Widget>[
             Padding(
-                padding: const EdgeInsets.fromLTRB(30,30,30,0),
-                child: Image.asset('images/logo.jpg'),
+              padding: const EdgeInsets.fromLTRB(0,10,15,0),
+              child: GestureDetector(
+                onTap: (){
+                  Navigator.push(context,
+                    CupertinoPageRoute(builder: (context) => AdminLogin()),
+                  );
+                },
+                child: Container(child: CustomText(size: 20,text: 'Admin',)),
               ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: InputField(hint: 'Email',type: TextInputType.emailAddress,controller: email,),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: InputField(hint: 'Password',ispassword: true,controller: password,),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(30,30,30,0),
-              child: Button(text: 'Login',onclick: ()=>signInWithEmail(context),),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(30,15,30,0),
-              child: Button(text: 'Create an Account',onclick: (){
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(builder: (context) => SignUp()),
-                );
-              },),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Text('OR',style: TextStyle(fontWeight: FontWeight.bold),),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.fromLTRB(30,20,30,0),
-              child: Button(text: 'Login with Google',onclick: ()=>signInWithGoogle(context),social: true,),
             )
-
           ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(30,30,30,0),
+                  child: Image.asset('images/logo.jpg'),
+                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: InputField(hint: 'Email',type: TextInputType.emailAddress,controller: email,),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: InputField(hint: 'Password',ispassword: true,controller: password,),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(30,30,30,0),
+                child: Button(text: 'Login',onclick: ()=>signInWithEmail(context),),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(30,15,30,0),
+                child: Button(text: 'Create an Account',onclick: (){
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(builder: (context) => SignUp()),
+                  );
+                },),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Text('OR',style: TextStyle(fontWeight: FontWeight.bold),),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(30,20,30,0),
+                child: Button(text: 'Login with Google',onclick: ()=>signInWithGoogle(context),social: true,),
+              )
+
+            ],
+          ),
         ),
       ),
     );

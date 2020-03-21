@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pikatcha/screens/admin/admin-complete.dart';
 import 'package:pikatcha/screens/admin/admin-order-info.dart';
 import 'package:pikatcha/widgets/button.dart';
+import 'package:pikatcha/widgets/toast.dart';
 
 
 class AdminHomeMain extends StatefulWidget {
@@ -30,41 +31,55 @@ class _AdminHomeMainState extends State<AdminHomeMain> with SingleTickerProvider
     tabController.dispose();
     super.dispose();
   }
-
+  DateTime currentBackPressTime;
+  Future<bool> onWillPop() {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      ToastBar(text: 'Tap Back again to Exit',color: Colors.grey).show();
+      return Future.value(false);
+    }
+    return Future.value(true);
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Admin Home',
-          style: TextStyle(fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Admin Home',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          bottom: new TabBar(
+            indicatorColor: Colors.white,
+            controller: tabController,
+            tabs: <Widget>[
+              new Tab(
+                child: new Text("Pending",
+                    style: new TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              new Tab(
+                  child: new Text("Completed",
+                    style: new TextStyle(fontWeight: FontWeight.bold),
+                  )),
+            ],
+          ),
         ),
-        bottom: new TabBar(
-          indicatorColor: Colors.white,
+
+
+        body: new TabBarView(
+          children: <Widget>[
+                AdminPending(),
+                AdminComplete()
+            ],
           controller: tabController,
-          tabs: <Widget>[
-            new Tab(
-              child: new Text("Pending",
-                  style: new TextStyle(fontWeight: FontWeight.bold)),
-            ),
-            new Tab(
-                child: new Text("Completed",
-                  style: new TextStyle(fontWeight: FontWeight.bold),
-                )),
-          ],
         ),
+
       ),
-
-
-      body: new TabBarView(
-        children: <Widget>[
-              AdminPending(),
-              AdminComplete()
-          ],
-        controller: tabController,
-      ),
-
     );
   }
 }

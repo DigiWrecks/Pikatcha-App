@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pikatcha/screens/login.dart';
 import 'package:pikatcha/splash.dart';
+import 'package:pikatcha/widgets/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
