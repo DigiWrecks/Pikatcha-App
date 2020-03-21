@@ -1,16 +1,15 @@
-import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_credit_card/credit_card_form.dart';
 import 'package:flutter_credit_card/credit_card_model.dart';
-import 'package:flutter_credit_card/credit_card_widget.dart';
 import 'package:pikatcha/widgets/button.dart';
 import 'package:pikatcha/widgets/custom-text.dart';
-import 'package:pikatcha/widgets/inputfield.dart';
 import 'package:pikatcha/widgets/toast.dart';
 import 'package:stripe_payment/stripe_payment.dart';
-import 'package:http/http.dart' as http;
+
+import 'finalcheckout.dart';
+
 class CheckOut extends StatefulWidget {
   final int tot;
   final String img1,img2,img3,img4,img5,img6,img7,img8,img9,img10;
@@ -26,11 +25,6 @@ class CheckOut extends StatefulWidget {
 }
 
 class _CheckOutState extends State<CheckOut> {
-  String cardNumber = '';
-  String expiryDate = '';
-  String cardHolderName = '';
-  String cvvCode = '';
-  bool isCvvFocused = false;
   List<String> images= [];
   List<String> sizes= [];
   List<String> prices= [];
@@ -89,75 +83,6 @@ class _CheckOutState extends State<CheckOut> {
   }
 
 
-  void onCreditCardModelChange(CreditCardModel creditCardModel) {
-    setState(() {
-      cardNumber = creditCardModel.cardNumber;
-      expiryDate = creditCardModel.expiryDate;
-      cardHolderName = creditCardModel.cardHolderName;
-      cvvCode = creditCardModel.cvvCode;
-      isCvvFocused = creditCardModel.isCvvFocused;
-    });
-  }
-
-
-  checkAvailiability() async {
-    Random rnd = Random();
-    var r = 10000 + rnd.nextInt(99999 - 10000);
-    var x = await Firestore.instance.collection('images').where('code', isEqualTo: r.toString()).getDocuments();
-    var availiable = x.documents;
-
-    if(availiable.isEmpty){
-      sendToFirestore(r.toString());
-    }
-    else{
-      checkAvailiability();
-    }
-
-  }
-
-  sendToFirestore(String code){
-    try{
-      Firestore.instance.collection('images').document(code).setData({
-        'image1': widget.img1,
-        'image2': widget.img2,
-        'image3': widget.img3,
-        'image4': widget.img4,
-        'image5': widget.img5,
-        'image6': widget.img6,
-        'image7': widget.img7,
-        'image8': widget.img8,
-        'image9': widget.img9,
-        'image10': widget.img10,
-
-        'size1':widget.size1,
-        'size2':widget.size2,
-        'size3':widget.size3,
-        'size4':widget.size4,
-        'size5':widget.size5,
-        'size6':widget.size6,
-        'size7':widget.size7,
-        'size8':widget.size8,
-        'size9':widget.size9,
-        'size10':widget.size10,
-
-        'isComplete': false,
-        'phone': widget.phone,
-        'email': widget.email,
-        'address': widget.address,
-        'name': widget.name,
-        'code': code,
-        'buildingNo': widget.building,
-        'unitNo': widget.unit,
-        'postal': widget.postal
-
-      });
-
-      ToastBar(text: 'Data send successfully!',color: Colors.green).show();
-    }
-    catch(e){
-      ToastBar(text: 'Something Went Wrong While Uploading Data!',color: Colors.red).show();
-    }
-  }
 
 
 
@@ -232,46 +157,47 @@ class _CheckOutState extends State<CheckOut> {
             SizedBox(height: 10,),
             CustomText(text: '\$${widget.tot/100}0',size: 70,),
             SizedBox(height: 20,),
-            CreditCardWidget(
-              cardNumber: cardNumber,
-              expiryDate: expiryDate,
-              cardHolderName: cardHolderName,
-              cvvCode: cvvCode,
-              showBackView: isCvvFocused,
-            ),
-            CreditCardForm(
-              onCreditCardModelChange: onCreditCardModelChange,
-            ),
             Padding(
               padding: const EdgeInsets.all(30),
-              child: Button(text: 'Checkout',onclick: () async {
-                final CreditCard testCard = CreditCard(
-                  number: cardNumber,
-                  expMonth: int.parse(expiryDate[0]+expiryDate[1]),
-                  expYear: int.parse(expiryDate[3]+expiryDate[4]),
-                  cvc: cvvCode,
-                );
+              child: Button(text: 'Checkout',onclick: (){
+                Navigator.push(context, CupertinoPageRoute(builder: (context){
+                  return FinalCheckout(
+                    unit: widget.unit,
+                    postal: widget.postal,
+                    building: widget.building,
+                    address: widget.address,
+                    email: widget.email,
+                    name: widget.name,
+                    phone: widget.phone,
 
-                //print(int.parse(expiryDate[3]+expiryDate[4]));
-                StripePayment.createTokenWithCard(
-                  testCard,
-                ).then((token) async {
-                 try{
-                   var response = await http.post('https://api.stripe.com/v1/charges',
-                     body: {'amount': '${widget.tot.toString()}','currency': 'usd',"source": token.tokenId},
-                     headers: {'Authorization': "Bearer sk_test_Ovju8LDOSOIrGrUYPfUB73RQ00BMawpAck"},
-                   );
-                   print('Response status: ${response.statusCode}');
-                   print('Response body: ${response.body}');
+                    size1: widget.size1,
+                    size2: widget.size2,
+                    size3: widget.size3,
+                    size4: widget.size4,
+                    size5: widget.size5,
+                    size6: widget.size6,
+                    size7: widget.size7,
+                    size8: widget.size8,
+                    size9: widget.size9,
+                    size10: widget.size10,
 
-                  checkAvailiability();
+                    img1: widget.img1,
+                    img2: widget.img2,
+                    img3: widget.img3,
+                    img4: widget.img4,
+                    img5: widget.img5,
+                    img6: widget.img6,
+                    img7: widget.img7,
+                    img8: widget.img8,
+                    img9: widget.img9,
+                    img10: widget.img10,
 
-                 }
-                 catch(e){
-                   ToastBar(text: 'Something went Wrong While Processing the Payment',color: Colors.red).show();
-                 }
-                });
+                    tot: widget.tot.toString(),
 
+
+
+
+                  );}));
               },),
             )
           ],

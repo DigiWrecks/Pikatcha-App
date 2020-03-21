@@ -43,8 +43,48 @@ class _UploadWidgetState extends State<UploadWidget> {
             child: GestureDetector(
               onTap: () async {
                 image = await ImagePicker.pickImage(source: ImageSource.gallery);
-                enableButton = true;
-                setState(() {});
+                var price;
+                switch(x){
+                  case '2R':
+                    price = 0200;
+                    break;
+                  case '3R':
+                    price = 0230;
+                    break;
+                  case '4R':
+                    price = 0260;
+                    break;
+                  case '5R':
+                    price = 0300;
+                    break;
+                  case '6R':
+                    price = 0400;
+                    break;
+                }
+                try{
+                    ToastBar(color: Colors.orangeAccent,text: 'Uploading').show();
+                    StorageReference ref = FirebaseStorage.instance.ref().child("${basename(image.path)}");
+                    StorageUploadTask uploadTask = ref.putFile(image);
+                    final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+                    imageURL = (await downloadUrl.ref.getDownloadURL());
+                    print("url is $imageURL");
+                    enableButton = false;
+                    setState(() {
+                      _icon = Icons.check_circle_outline;
+                    });
+                    ToastBar(color: Colors.green,text: 'Upload Sucessful!').show();
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    print(widget.index);
+                    prefs.setString('size${widget.index}', x);
+                    prefs.setString('image${widget.index}', imageURL);
+                    prefs.setInt('price${widget.index}', price);
+
+                  }
+                  catch(e){
+                    ToastBar(color: Colors.red,text: 'Upload is not Sucessful!').show();
+                    print(e);
+                  }
+
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -56,99 +96,106 @@ class _UploadWidgetState extends State<UploadWidget> {
             ),
           ),
         ),
-        Expanded(child: DropdownButton(
-          items: [
-            DropdownMenuItem(child: CustomText(text: 'Select Size',),value: 'Select Size',),
-            DropdownMenuItem(child: CustomText(text: '2R - \$2.00',),value: '2R',),
-            DropdownMenuItem(child: CustomText(text: '3R - \$2.30',),value: '3R',),
-            DropdownMenuItem(child: CustomText(text: '4R - \$2.60',),value: '4R',),
-            DropdownMenuItem(child: CustomText(text: '5R - \$3.00',),value: '5R',),
-            DropdownMenuItem(child: CustomText(text: '6R - \$4.00',),value: '6R',),
-          ],onChanged:(newValue) async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 30),
+            child: DropdownButton(
+              isExpanded: true,
+              items: [
+              DropdownMenuItem(child: CustomText(text: 'Select Size',),value: 'Select Size',),
+              DropdownMenuItem(child: CustomText(text: '2R - \$2.00',),value: '2R',),
+              DropdownMenuItem(child: CustomText(text: '3R - \$2.30',),value: '3R',),
+              DropdownMenuItem(child: CustomText(text: '4R - \$2.60',),value: '4R',),
+              DropdownMenuItem(child: CustomText(text: '5R - \$3.00',),value: '5R',),
+              DropdownMenuItem(child: CustomText(text: '6R - \$4.00',),value: '6R',),
+            ],onChanged:(newValue) async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
 
-          setState(() {
-            x = newValue;
-            prefs.setString('size${widget.index}', x);
-            var price;
-            switch(x){
-              case '2R':
-                price = 0200;
-                break;
-              case '3R':
-                price = 0230;
-                break;
-              case '4R':
-                price = 0260;
-                break;
-              case '5R':
-                price = 0300;
-                break;
-              case '6R':
-                price = 0400;
-                break;
-            }
-            prefs.setInt('price${widget.index}', price);
-          });
+            setState(() {
+              x = newValue;
+              prefs.setString('size${widget.index}', x);
+              var price;
+              switch(x){
+                case '2R':
+                  price = 0200;
+                  break;
+                case '3R':
+                  price = 0230;
+                  break;
+                case '4R':
+                  price = 0260;
+                  break;
+                case '5R':
+                  price = 0300;
+                  break;
+                case '6R':
+                  price = 0400;
+                  break;
+              }
+              prefs.setInt('price${widget.index}', price);
+            });
 
         },
-          value: x,
-        ),),
-        Expanded(child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Button(text: 'Upload',onclick: () async {
-            var price;
-            switch(x){
-              case '2R':
-                price = 0200;
-                break;
-              case '3R':
-                price = 0230;
-                break;
-              case '4R':
-                price = 0260;
-                break;
-              case '5R':
-                price = 0300;
-                break;
-              case '6R':
-                price = 0400;
-                break;
-            }
-
-
-            if(enableButton == true){
-              try{
-                ToastBar(color: Colors.orangeAccent,text: 'Uploading').show();
-                StorageReference ref = FirebaseStorage.instance.ref().child("${basename(image.path)}");
-                StorageUploadTask uploadTask = ref.putFile(image);
-                final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
-                imageURL = (await downloadUrl.ref.getDownloadURL());
-                print("url is $imageURL");
-                enableButton = false;
-                setState(() {
-                  _icon = Icons.check_circle_outline;
-                });
-                ToastBar(color: Colors.green,text: 'Upload Sucessful!').show();
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                print(widget.index);
-                prefs.setString('size${widget.index}', x);
-                prefs.setString('image${widget.index}', imageURL);
-                prefs.setInt('price${widget.index}', price);
-
-              }
-              catch(e){
-                ToastBar(color: Colors.red,text: 'Upload is not Sucessful!').show();
-                print(e);
-              }
-            }
-            else{
-              print('disabled');
-              null;
-            }
-
-          },),
-        )),
+            value: x,
+        ),
+          ),
+        ),
+//        Expanded(child: Padding(
+//          padding: const EdgeInsets.all(15),
+//          child: Button(text: 'Upload',onclick: () async {
+//            var price;
+//            switch(x){
+//              case '2R':
+//                price = 0200;
+//                break;
+//              case '3R':
+//                price = 0230;
+//                break;
+//              case '4R':
+//                price = 0260;
+//                break;
+//              case '5R':
+//                price = 0300;
+//                break;
+//              case '6R':
+//                price = 0400;
+//                break;
+//            }
+//
+//
+//            if(enableButton == true){
+//              try{
+//                ToastBar(color: Colors.orangeAccent,text: 'Uploading').show();
+//                StorageReference ref = FirebaseStorage.instance.ref().child("${basename(image.path)}");
+//                StorageUploadTask uploadTask = ref.putFile(image);
+//                final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+//                imageURL = (await downloadUrl.ref.getDownloadURL());
+//                print("url is $imageURL");
+//                enableButton = false;
+//                setState(() {
+//                  _icon = Icons.check_circle_outline;
+//                });
+//                ToastBar(color: Colors.green,text: 'Upload Sucessful!').show();
+//                SharedPreferences prefs = await SharedPreferences.getInstance();
+//                print(widget.index);
+//                prefs.setString('size${widget.index}', x);
+//                prefs.setString('image${widget.index}', imageURL);
+//                prefs.setInt('price${widget.index}', price);
+//
+//              }
+//              catch(e){
+//                ToastBar(color: Colors.red,text: 'Upload is not Sucessful!').show();
+//                print(e);
+//              }
+//            }
+//            else{
+//              print('disabled');
+//              null;
+//            }
+//
+//          },),
+//        )
+//        ),
       ],
     );
   }

@@ -18,7 +18,8 @@ class AdminLogin extends StatelessWidget {
       if (user[0].data['password'] == password.text) {
         print('admin logged in');
 
-       Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context) => AdminHomeMain()));
+        Navigator.pushReplacement(context, CupertinoPageRoute(builder: (context){
+          return AdminHomeMain();}));
       } else {
         ToastBar(text: 'Email or password is incorrect!', color: Colors.red)
             .show();
